@@ -10,7 +10,9 @@ prefix = joinpath(BinDeps.depsdir(libtokenizer), "usr")
 pkgdir = BinDeps.pkgdir(libtokenizer)
 srcdir = joinpath(BinDeps.depsdir(libtokenizer), "src", "tokenizer")
 c_srcdir = joinpath(pkgdir, "src", "c")
-target=joinpath(prefix, "lib", "libtokenizer.dylib")
+@osx_only target_lib="libtokenizer.dylib"
+@linux_only target_lib="libtokenizer.so"
+target=joinpath(prefix, "lib", target_lib)
 provides(BuildProcess,
   (@build_steps begin
     CreateDirectory(prefix)
@@ -21,7 +23,7 @@ provides(BuildProcess,
       ChangeDirectory(joinpath(srcdir, "c"))
       FileRule(target, @build_steps begin
         MakeTargets(["libtokenizer"])
-        `cp $srcdir/c/libtokenizer.dylib $target`
+        `cp $srcdir/c/$target_lib $target`
       end)
     end
   end), libtokenizer)
