@@ -1,10 +1,16 @@
 module c
 
-include("../../deps.jl")
+include("../deps/deps.jl")
 
 export
-  scanner, Token,
-  Scanner_init, next
+  # Token types
+  WORD, WORD_F, NUM, SPEC, SPEC_SP, SPEC_PUNCT, URL, OTHER,
+
+  # Types
+  Scanner, Token,
+
+  # Methods
+  Scanner_init, Scanner_next
 
 # Token types
 const WORD   = convert(Cint, 0x0001)
@@ -25,7 +31,7 @@ immutable Scanner
 end
 
 immutable Token
-  type::Cint
+  typ::Cint
   start::CString
   length::Csize_t
 end
@@ -37,7 +43,7 @@ function Scanner_init(scanner, string, length)
 end
 
 # Move to the next token
-function next(scanner, token)
+function Scanner_next(scanner, token)
   ccall((:next, libtokenizer), Cint, (Ptr{Scanner}, Ptr{Token}),
     scanner, token)
 end
