@@ -1,5 +1,10 @@
 using tokenizer
-using Base.Test  
+using Base.Test
 
-# write your own tests here
-@test 1 == 1
+function test_tokenize()
+  for (typ, tok) = tokens("aa bb")
+    printf("type=$typ tok=$tok")
+  end
+end
+
+test_tokenize()
