@@ -1,8 +1,9 @@
-using tokenizer
+include("../src/tokenizer.jl")
 using Base.Test
+using tokenizer
 
 function test_tokenize()
-  @assert "1[aa] 259[ ] 1[bb]" == toks("aa bb")
+  @assert "1[aa] 3[ ] 1[bb]" == toks("aa bb")
 end
 
 function test_iter()
@@ -11,20 +12,23 @@ function test_iter()
   @assert !done(toks, st)
 
   (it, st) = next(toks, st)
-  @assert (WORD, "aa") == it
+  @assert WORD == it.typ
+  @assert "aa" == it.token
   @assert !done(toks, st)
 
   (it, st) = next(toks, st)
-  @assert (SPEC_SP, " ") == it
+  @assert SPEC_SP == it.typ
+  @assert " " == it.token
   @assert !done(toks, st)
 
   (it, st) = next(toks, st)
-  @assert (WORD, "bb") == it
+  @assert WORD == it.typ
+  @assert "bb" == it.token
   @assert done(toks, st)
 end
 
 function toks(s::String)
-  str(it) = "$(it[1])[$(it[2])]"
+  str(it) = "$(it.typ)[$(it.token)]"
   join(map(str, tokens(s)), " ")
 end
 
